@@ -34,6 +34,10 @@ public interface BookMapper {
     Book selectBookByID(int id);
 
     @Select("select * " +
+            "from book")
+    List<Book> selectAll();
+
+    @Select("select * " +
             "from book " +
             "where name like '%${name}%'")
     List<Book> selectBookByName(String name);

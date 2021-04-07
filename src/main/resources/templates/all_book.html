@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>商城</title>
+    <title>Title</title>
 </head>
 <body>
-
+<div align="center">
+    <table border="1">
+        <tr>
+            <th>name</th>
+            <th>author</th>
+            <th>price</th>
+            <th>tag</th>
+        </tr>
+        <tr th:each="book:${pageInfo.list}">
+            <td th:text="${book.name}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.price}"></td>
+            <td th:text="${book.tag}"></td>
+        </tr>
+    </table>
+    <p>当前 <span th:text="${pageInfo.pageNum}"></span> 页,总 <span th:text="${pageInfo.pages}"></span> 页,共 <span th:text="${pageInfo.total}"></span> 条记录</p>
+    <a th:href="@{/getAllBook}">首页</a>
+    <a th:href="@{/getAllBook(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>
+    <a th:href="@{/getAllBook(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>
+    <a th:href="@{/getAllBook(pageNum=${pageInfo.pages})}">尾页</a>
+</div>
 </body>
 </html>
