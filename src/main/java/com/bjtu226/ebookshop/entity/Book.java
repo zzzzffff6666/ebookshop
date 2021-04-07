@@ -55,4 +55,16 @@ public class Book {
     public void setFile(String file) {
         this.file = file;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", tag='" + tag + '\'' +
+                ", author='" + author + '\'' +
+                ", file='" + file + '\'' +
+                '}';
+    }
 }
