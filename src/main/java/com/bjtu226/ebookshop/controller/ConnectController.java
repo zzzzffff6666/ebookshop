@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping
 public class ConnectController {
+
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -40,15 +40,6 @@ public class ConnectController {
         PageHelper.startPage(1, 10);
         PageInfo<Book> pageInfo = new PageInfo<>(bookMapper.selectAll());
         model.addAttribute("pageInfo", pageInfo);
-        return "/all_book";
-    }
-
-    @GetMapping("/getAllBook")
-    public String getAllPerson(Model model,@RequestParam(defaultValue = "1",value = "pageNum") Integer pageNum){
-        PageHelper.startPage(pageNum,10);
-        List<Book> list = bookMapper.selectAll();
-        PageInfo<Book> pageInfo = new PageInfo<Book>(list);
-        model.addAttribute("pageInfo",pageInfo);
         return "/all_book";
     }
 }
