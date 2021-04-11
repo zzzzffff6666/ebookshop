@@ -13,6 +13,8 @@ public interface BookMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insertBook(Book book);
 
+
+
     @Delete("delete from " +
             "book " +
             "where id = #{id}")
@@ -36,6 +38,11 @@ public interface BookMapper {
     @Select("select * " +
             "from book")
     List<Book> selectAll();
+
+    @Select("select * " +
+            "from book " +
+            "where name = #{name}")
+    Book selectoneBookByName(String name);
 
     @Select("select * " +
             "from book " +

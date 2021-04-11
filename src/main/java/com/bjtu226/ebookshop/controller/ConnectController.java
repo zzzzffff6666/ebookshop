@@ -40,6 +40,6 @@ public class ConnectController {
         PageHelper.startPage(1, 10);
         PageInfo<Book> pageInfo = new PageInfo<>(bookMapper.selectAll());
         model.addAttribute("pageInfo", pageInfo);
-        return "/all_book";
+        return "/all_book_manager";
     }
 }

@@ -1,24 +1,33 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:text-align="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/all_book.css">
     <title>书城</title>
 </head>
 <body>
+<div>
+    <h1 align="center" ><strong>bookshop</strong></h1>
+</div>
 <div align="center">
-    <table border="1">
+    <table border="4">
         <tr>
             <th>name</th>
             <th>author</th>
             <th>price</th>
             <th>tag</th>
+            <th>read online</th>
+            <th>download</th>
         </tr>
         <tr th:each="book:${pageInfo.list}">
             <td th:text="${book.name}"></td>
             <td th:text="${book.author}"></td>
             <td th:text="${book.price}"></td>
             <td th:text="${book.tag}"></td>
+            <td ><a th:href="@{'http://localhost:8080/static/'+${book.file}}"/>reading</td>
+            <td ><a href="/download">下载</a></td>
         </tr>
+
     </table>
     <p>当前 <span th:text="${pageInfo.pageNum}"></span> 页,总 <span th:text="${pageInfo.pages}"></span> 页,共 <span th:text="${pageInfo.total}"></span> 条记录</p>
     <a th:href="@{/getAllBook}">首页</a>
