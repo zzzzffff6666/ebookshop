@@ -28,13 +28,13 @@ public class ConnectController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam(value = "name") String name, @RequestParam(value = "password") String password, HttpSession session, Model model) {
-        System.out.println(name+":"+password);
-
+    public String login(@RequestParam("name") String name,
+                        @RequestParam("password") String password,
+                        HttpSession session, Model model) {
         User user = userMapper.selectUser(name);
         if (user == null || !user.getPassword().equals(password)) {
             model.addAttribute("error", "用户名或密码错误！");
-            return "login";
+            return "/login";
         }
         session.setAttribute("user", user.getId());
         PageHelper.startPage(1, 10);
@@ -42,4 +42,6 @@ public class ConnectController {
         model.addAttribute("pageInfo", pageInfo);
         return "/all_book_manager";
     }
+
+
 }

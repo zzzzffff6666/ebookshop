@@ -30,6 +30,15 @@ public interface BookMapper {
             "where id = #{id}")
     int updateBook(Book book);
 
+    @Update("update book " +
+            "set " +
+            "price = #{price}, " +
+            "tag = #{tag}, " +
+            "author = #{author}, " +
+            "file = #{file} " +
+            "where name = #{name}")
+    int updateBookByName(Book book);
+
     @Select("select * " +
             "from book " +
             "where id = #{id}")
@@ -42,7 +51,7 @@ public interface BookMapper {
     @Select("select * " +
             "from book " +
             "where name = #{name}")
-    Book selectoneBookByName(String name);
+    Book selectOneBookByName(String name);
 
     @Select("select * " +
             "from book " +

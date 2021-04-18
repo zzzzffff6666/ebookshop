@@ -5,18 +5,11 @@ import com.bjtu226.ebookshop.entity.Book;
 import com.bjtu226.ebookshop.mapper.BookMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
 import java.util.List;
 
 @Controller
@@ -26,32 +19,55 @@ public class BookController {
     @Resource
     private BookMapper bookMapper;
 
-    @GetMapping("/addBook")
-    public String getAddPage() {
-        return "/add";
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id")int id,Model model) {
+        int i=bookMapper.deleteBook(id);
+        PageHelper.startPage(1, 10);
+        PageInfo<Book> pageInfo = new PageInfo<>(bookMapper.selectAll());
+        model.addAttribute("pageInfo", pageInfo);
+        return "/all_book_manager";
     }
 
+    @GetMapping("/modify/{name}")
+    public String modify(@PathVariable("name")String name,Model model){
+        Book book=bookMapper.selectOneBookByName(name);
+
+        model.addAttribute("book",book);
+        return "/modify";
+    }
+
+    @PostMapping("/modify")
+    public String submit_modify(@RequestParam("modify_name")String name,
+                                @RequestParam("modify_author")String author,
+                                @RequestParam("modify_tag")String tag,
+                                @RequestParam("modify_price")String price,
+                                @RequestParam("modify_file")String file,
+                                Model model){
+        Book book=new Book();
+        book.setName(name);
+        book.setPrice(Float.parseFloat(price));
+        book.setTag(tag);
+        book.setAuthor(author);
+        book.setFile(file);
+        System.out.println("there has been came");
+        bookMapper.updateBookByName(book);
+        PageHelper.startPage(1, 10);
+        PageInfo<Book> pageInfo = new PageInfo<>(bookMapper.selectAll());
+        model.addAttribute("pageInfo", pageInfo);
+        return "/all_book_manager";
+    }
 
     @GetMapping("/show_file/{name}")
     @ResponseBody
     public String show_the_file(@PathVariable("name")String name) {
-        Book book=bookMapper.selectoneBookByName(name);
+        Book book=bookMapper.selectOneBookByName(name);
         String what=book.getFile();
         System.out.println(what);
         return what;
     }
 
-    @PostMapping("/addBook")
-    public void addBook(HttpServletResponse response) throws Exception {
-
-        response.sendRedirect("/getAllBook");
-    }
-
     @RequestMapping("/AddDataToServer")
-    @ResponseBody
-    public void add(@RequestBody JSONObject jsonObject,Model model) throws Exception {
-
-
+    public String add(@RequestBody JSONObject jsonObject,Model model) {
         Book book=new Book();
         book.setName((String)jsonObject.get("new_name"));
         book.setPrice(Float.parseFloat((String)jsonObject.get("new_price")));
@@ -59,24 +75,15 @@ public class BookController {
         book.setTag((String)jsonObject.get("new_tag"));
         book.setFile((String)jsonObject.get("new_file"));
         bookMapper.insertBook(book);
-
+        PageHelper.startPage(1, 10);
+        PageInfo<Book> pageInfo = new PageInfo<>(bookMapper.selectAll());
+        model.addAttribute("pageInfo", pageInfo);
+        return "/all_book_manager";
     }
 
     @GetMapping("/modifyBook")
     public String getModifyPage() {
         return "/modify";
-    }
-
-    @PostMapping("/modifyBook")
-    public void modifyBook(HttpServletResponse response) throws Exception {
-
-        response.sendRedirect("/getAllBook");
-    }
-
-    @PostMapping("/deleteBook")
-    public void deleteBook(HttpServletResponse response) throws Exception {
-
-        response.sendRedirect("/getAllBook");
     }
 
     @GetMapping("/getAllBook")
@@ -88,14 +95,14 @@ public class BookController {
         return "/all_book_manager";
     }
 
-    @GetMapping("/searchBook")
-    public String searchBook() {
+    @GetMapping("/search/{search}")
+    public String searchBook(@PathVariable("search") String search,Model model) {
+        List<Book> list=bookMapper.selectBookByName(search);
+        System.out.println(search);
+        PageHelper.startPage(1, 10);
+        PageInfo<Book> pageInfo= new PageInfo<>(list);
+        model.addAttribute("pageInfo",pageInfo);
         return "/search_list";
     }
-
-
-
-
-
 
 }

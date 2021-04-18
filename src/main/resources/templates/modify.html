@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>修改书本信息</title>
 </head>
 <body>
+<form class="modify_form" action="/modify" method="post">
+    <p>
+    <input type="text" id="modify_name" name="modify_name" th:value="${book.name}" readonly/>
+    </p>
+    <p>
+    <input type="text" id="modify_price" name="modify_price" th:value="${book.price}"/>
+    </p>
+    <p>
+    <input type="text" id="modify_tag" name="modify_tag" th:value="${book.tag}"/>
+    </p>
+    <p>
+    <input type="text" id="modify_author" name="modify_author" th:value="${book.author}"/>
+    </p>
+    <p>
+    <input type="text" id="modify_file" name="modify_file" th:value="${book.file}"/>
+    </p>
 
+    <input type="submit" id="submit_modify" value="modify"/>
+</form>
 </body>
 </html>
