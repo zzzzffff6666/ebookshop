@@ -1,39 +1,178 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:text-align="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+>
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/css/all_book.css">
     <title>书城</title>
+
 </head>
 <body>
 <div>
-    <h1 align="center" ><strong>bookshop</strong></h1>
+    <h1 align="center"><strong>bookshop</strong></h1>
+    <input name="search" id="search"/>
+    <input type="button" onclick="f()">
 </div>
 <div align="center">
     <table border="4">
+        <thead>
         <tr>
             <th>name</th>
             <th>author</th>
             <th>price</th>
             <th>tag</th>
             <th>read online</th>
-            <th>download</th>
+            <th>modify</th>
+            <th>delete</th>
         </tr>
-        <tr th:each="book:${pageInfo.list}">
-            <td th:text="${book.name}"></td>
-            <td th:text="${book.author}"></td>
-            <td th:text="${book.price}"></td>
-            <td th:text="${book.tag}"></td>
-            <td ><a th:href="@{'http://localhost:8080/static/'+${book.file}}"/>reading</td>
-            <td ><a href="/download">下载</a></td>
+        </thead>
+        <tbody id="tb">
+        <tr class="line" th:each="book:${pageInfo.list}">
+            <td class="name" id="name" th:text="${book.name}">x</td>
+            <td id="author" th:text="${book.author}"></td>
+            <td id="price" th:text="${book.price}"></td>
+            <td id="tag" th:text="${book.tag}"></td>
+            <td id="view"><a th:href="@{'http://localhost:8080/showFile/'+${book.name}}"/>reading</td>
+            <td id="modify"><a th:href="@{'http://localhost:8080/modify/'+${book.name}}"/>modify</td>
+            <td id="delete"><a th:href="@{'http://localhost:8080/delete/'+${book.id}}"/>delete</td>
         </tr>
+        </tbody>
 
+        <tfoot id="tf">
+
+        </tfoot>
     </table>
-    <p>当前 <span th:text="${pageInfo.pageNum}"></span> 页,总 <span th:text="${pageInfo.pages}"></span> 页,共 <span th:text="${pageInfo.total}"></span> 条记录</p>
+    <p></p>
+    <p id="add_way"></p>
+    <p></p>
+    <p>当前 <span th:text="${pageInfo.pageNum}"></span> 页,总 <span th:text="${pageInfo.pages}"></span> 页,共 <span
+            id="many" th:text="${pageInfo.total}"></span> 条记录</p>
     <a th:href="@{/getAllBook}">首页</a>
     <a th:href="@{/getAllBook(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}">上一页</a>
     <a th:href="@{/getAllBook(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}">下一页</a>
     <a th:href="@{/getAllBook(pageNum=${pageInfo.pages})}">尾页</a>
+    <input type="hidden" th:class="${pageInfo.pages}" th:value="${pageInfo.pages}" id="pages"/>
+    <input type="hidden" th:class="${pageInfo.pageNum}" th:value="${pageInfo.pageNum}" id="pagesNum"/>
 </div>
 </body>
 </html>
+
+
+<script>
+
+    function addRows() {
+        var row = document.createElement("tr");
+        var name = document.createElement("td");
+        var author = document.createElement("td");
+        var price = document.createElement("td");
+        var tag = document.createElement("td");
+        var file = document.createElement("td");
+        var confirm = document.createElement("td");
+
+        name.innerHTML = "<input id='name' type='text' required />"
+        author.innerHTML = "<input id='author' type='text' required />"
+        price.innerHTML = "<input id='price' type='text' required />"
+        tag.innerHTML = "<input id='tag' type='text' required/>"
+        file.innerHTML = "<input id='file' type='text' required />"
+        confirm.innerHTML = "<input type='button' id='sub' class='sub' onclick='confirm(this)'>"
+
+        row.appendChild(name);
+        row.appendChild(author);
+        row.appendChild(price);
+        row.appendChild(tag);
+        row.appendChild(file);
+        row.appendChild(confirm);
+
+        document.getElementById("tb").appendChild(row);
+    }
+
+
+    pages = document.getElementById("pages").className;
+    newPage = document.getElementById("pagesNum").className;
+    if (pages == newPage) {
+
+        var add = document.createElement("div");
+        add.innerHTML = "<button class='add_b' onclick='addRows()'>add a row</button>"
+        document.getElementById("add_way").appendChild(add);
+
+    }
+
+
+    function confirm(obj) {
+        name = document.getElementById("name").value;
+        price = document.getElementById("price").value;
+        tag = document.getElementById("tag").value;
+        author = document.getElementById("author").value;
+        file = document.getElementById("file").value;
+
+        console.log(name + price + tag + author + file);
+
+        x = document.getElementById("sub");
+        btnline = obj.parentNode;
+        btnline.removeChild(x);
+
+        data = {
+            "name": name,
+            "price": price,
+            "tag": tag,
+            "author": author,
+            "file": file
+        };
+        console.log(data);
+        var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+        httpRequest.open("POST", "/addBook", false);  //调用AddDataToServer
+        httpRequest.setRequestHeader("Content-Type", "application/json");   //设置请求头信息
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                alert('添加成功');
+            }
+        }
+        httpRequest.send(JSON.stringify(data)); //设置为发送给服务器数据
+        history.go(0);
+    }
+
+    function passToSearch() {
+
+        let name = document.getElementsByClassName("name");
+        let list = document.getElementsByClassName("line");
+        let many;
+        let input;
+        // let name = document.getElementById("name").innerHTML;
+
+
+        return function r(input) {
+
+
+            if (!many) {
+                many = document.getElementById("many").innerHTML;
+            }
+            if (!input) {
+                input = document.getElementById("search").value;
+            }
+
+            var k = 0;
+            for (let i = 0; i < 10; i++) {
+
+                let nowName = name[k].innerHTML;
+                console.log(nowName);
+                console.log(input);
+                if (nowName.indexOf(input) != -1) {//如果包含关键字的话，就不删除
+                    k++;
+
+                } else {
+                    list[k].parentNode.removeChild(list[k]);
+                }
+            }
+        }
+    }
+
+
+    var p = passToSearch();
+
+    function f() {
+
+        p();
+    }
+
+
+</script>

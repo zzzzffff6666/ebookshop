@@ -25,7 +25,7 @@ public class BookController {
         PageHelper.startPage(1, 10);
         PageInfo<Book> pageInfo = new PageInfo<>(bookMapper.selectAll());
         model.addAttribute("pageInfo", pageInfo);
-        return "/all_book_manager";
+        return "/all_book";
     }
 
     @GetMapping("/modify/{name}")
@@ -54,10 +54,10 @@ public class BookController {
         PageHelper.startPage(1, 10);
         PageInfo<Book> pageInfo = new PageInfo<>(bookMapper.selectAll());
         model.addAttribute("pageInfo", pageInfo);
-        return "/all_book_manager";
+        return "/all_book";
     }
 
-    @GetMapping("/show_file/{name}")
+    @GetMapping("/showFile/{name}")
     @ResponseBody
     public String show_the_file(@PathVariable("name")String name) {
         Book book=bookMapper.selectOneBookByName(name);
@@ -66,7 +66,7 @@ public class BookController {
         return what;
     }
 
-    @RequestMapping("/AddDataToServer")
+    @RequestMapping("/addBook")
     public String add(@RequestBody JSONObject jsonObject,Model model) {
         Book book=new Book();
         book.setName((String)jsonObject.get("new_name"));
@@ -78,7 +78,7 @@ public class BookController {
         PageHelper.startPage(1, 10);
         PageInfo<Book> pageInfo = new PageInfo<>(bookMapper.selectAll());
         model.addAttribute("pageInfo", pageInfo);
-        return "/all_book_manager";
+        return "/all_book";
     }
 
     @GetMapping("/modifyBook")
@@ -92,17 +92,7 @@ public class BookController {
         List<Book> list = bookMapper.selectAll();
         PageInfo<Book> pageInfo = new PageInfo<Book>(list);
         model.addAttribute("pageInfo", pageInfo);
-        return "/all_book_manager";
-    }
-
-    @GetMapping("/search/{search}")
-    public String searchBook(@PathVariable("search") String search,Model model) {
-        List<Book> list=bookMapper.selectBookByName(search);
-        System.out.println(search);
-        PageHelper.startPage(1, 10);
-        PageInfo<Book> pageInfo= new PageInfo<>(list);
-        model.addAttribute("pageInfo",pageInfo);
-        return "/search_list";
+        return "/all_book";
     }
 
 }
